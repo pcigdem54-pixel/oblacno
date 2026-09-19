@@ -127,8 +127,8 @@ class HelpSystem(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        # Kullanıcı yardım bekleme odasına girdiyse
-        if after.channel and after.channel.id == config.CHANNELS["YARDIM_BEKLEME_SES"]:
+        # Kullanıcı yardım bekleme odasına YENİ girdiyse (Bot susturduğunda veya mik aç kapa yaptığında spam atmasını önler)
+        if after.channel and after.channel.id == config.CHANNELS["YARDIM_BEKLEME_SES"] and before.channel != after.channel:
             try:
                 await member.edit(mute=True)
             except:
