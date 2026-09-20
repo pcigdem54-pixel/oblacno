@@ -40,6 +40,10 @@ class Events(commands.Cog):
                 )
                 await ticket_kanali.send(embed=embed, view=TicketBaslatView())
 
+        # 3. Bot başlar başlamaz üye sayısını güncelle
+        for guild in self.bot.guilds:
+            await self.update_member_count(guild)
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         # Sunucuya katılana Kayıtsız rolü ver
@@ -56,15 +60,14 @@ class Events(commands.Cog):
     async def update_member_count(self, guild):
         channel = guild.get_channel(config.CHANNELS.get("UYE_SAYISI_KANALI"))
         if channel:
-            # Botları saymıyoruz, sadece gerçek üyeler
             human_count = len([m for m in guild.members if not m.bot])
-            new_name = f"══▐ {human_count} KATILIMCI▐ ══"
+            new_name = f"══▐ {human_count} KATILIMCI ▐══"
             
             if channel.name != new_name:
                 try:
                     await channel.edit(name=new_name)
                 except discord.HTTPException:
-                    pass # Discord'un isim değiştirme limitine (10 dakikada 2 kez) takılırsak hata vermesin
+                    pass
 
 async def setup(bot):
     await bot.add_cog(Events(bot))
